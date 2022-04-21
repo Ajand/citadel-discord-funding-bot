@@ -12,6 +12,8 @@ const targetChannels = new Map(
     : null
 );
 
+console.log(targetChannels)
+
 client.on("messageCreate", function (message) {
   if (message.author.bot) return;
 
@@ -30,12 +32,32 @@ client.on("messageCreate", function (message) {
     if (targetChannels.get(message.channelId) !== message.author.id) {
       message.reply(`Only the channel setter can stop price tracker`);
     }
-    targetChannels.set(message.channelId, null);
+    targetChannels.delete(message.channelId);
     localStorage.setItem("targetChannels", JSON.stringify([...targetChannels]));
     message.reply(`Price tracker stopped`);
   } else {
     return;
   }
 });
+
+/// this interval should be changed to an event emitte
+setInterval(function () {
+  const channels = [...targetChannels.keys()];
+
+  console.log(...targetChannels.keys(), channels)
+
+  const eventType = "1";
+
+  const messages = () => {
+    switch (eventType) {
+      default:
+        return "Something important happened that changed the prices";
+    }
+  };
+
+  channels.forEach((channel) => {
+    client.channels.cache.get(channel).send(messages());
+  });
+}, 2000);
 
 client.login(config.BOT_TOKEN);
