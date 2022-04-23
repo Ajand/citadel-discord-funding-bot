@@ -1,3 +1,4 @@
+require("./mongooseConnector");
 const { ethers } = require("ethers");
 const config = require("./config.json");
 
@@ -16,8 +17,6 @@ const main = async () => {
     Funding.abi,
     provider
   );
-
-  
 };
 
 main();
