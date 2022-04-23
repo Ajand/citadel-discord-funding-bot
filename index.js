@@ -12,7 +12,7 @@ const targetChannels = new Map(
     : null
 );
 
-console.log(targetChannels)
+console.log(targetChannels);
 
 client.on("messageCreate", function (message) {
   if (message.author.bot) return;
@@ -41,7 +41,7 @@ client.on("messageCreate", function (message) {
 });
 
 /// this interval should be changed to an event emitte
-setInterval(function () {
+/*setInterval(function () {
   const channels = [...targetChannels.keys()];
 
   console.log(...targetChannels.keys(), channels)
@@ -58,6 +58,6 @@ setInterval(function () {
   channels.forEach((channel) => {
     client.channels.cache.get(channel).send(messages());
   });
-}, 2000);
+}, 2000); */
 
 client.login(config.BOT_TOKEN);
