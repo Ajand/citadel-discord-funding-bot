@@ -29,10 +29,15 @@ const PriceFlag = mongoose.model("priceFlag", PriceFlagSchema);
 
 const methods = {
   queries: {},
-  commands: {},
+  commands: {
+    create: (variant, { minPrice, maxPrice, price }) => {
+      const p = new PriceBound({ variant, minPrice, maxPrice, price });
+      return p.save();
+    },
+  },
 };
 
 module.exports = {
-  collection: PriceBound,
+  collection: PriceFlag,
   methods,
 };
