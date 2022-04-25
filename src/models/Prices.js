@@ -20,8 +20,22 @@ PriceSchema.index({ createdAt: 1 });
 var Price = mongoose.model("prices", PriceSchema);
 
 const methods = {
-  queries: {},
-  commands: {},
+  queries: {
+    getLast: () => {
+      return new Promise((resolve, reject) => {
+        Price.findOne({}, {}, { sort: { created_at: -1 } }, (err, price) => {
+          if (err) return reject(err);
+          return resolve(price);
+        });
+      });
+    },
+  },
+  commands: {
+    create: (variant, price) => {
+      const p = new Price({ variant, price });
+      return p.save();
+    },
+  },
 };
 
 module.exports = {
