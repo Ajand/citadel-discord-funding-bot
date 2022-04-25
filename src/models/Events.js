@@ -24,6 +24,10 @@ var EventSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    happendAt: {
+      type: Date,
+      required: true,
+    },
   },
   { strict: false }
 );
