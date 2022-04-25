@@ -5,9 +5,11 @@ var PriceSchema = new mongoose.Schema(
     variant: {
       type: String,
       enum: ["wbtc", "cvx"],
+      required: true,
     },
     price: {
       type: String,
+      required: true,
     },
   },
   { timestamp: true }

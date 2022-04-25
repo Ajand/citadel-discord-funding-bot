@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-var PriceBoundSchema = new mongoose.Schema(
+const PriceFlagSchema = new mongoose.Schema(
   {
     variant: {
       type: String,
@@ -15,13 +15,17 @@ var PriceBoundSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    price: {
+      type: String,
+      required: true,
+    },
   },
   { timestamp: true }
 );
 
 PriceBoundSchema.index({ createdAt: 1 });
 
-var PriceBound = mongoose.model("priceBound", PriceBoundSchema);
+const PriceFlag = mongoose.model("priceFlag", PriceFlagSchema);
 
 const methods = {
   queries: {},
