@@ -17,7 +17,7 @@ const calculatePriceAndTimeDiff = (variant) => async (newPrice, newDate) => {
 
   const lastPrice = BN.from(lastPriceItem.price);
 
-  const changeRate = newPrice.sub(lastPrice).mul(10000).div(newPrice);
+  const changeRate = newPrice.sub(lastPrice).mul(10000).div(lastPrice);
   const duration = moment(newDate).diff(moment(lastPriceItem.happenedAt));
 
   return {
