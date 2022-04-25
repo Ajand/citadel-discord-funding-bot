@@ -11,6 +11,7 @@ const EventSerializer = (address, startingBlock = 0) => {
       {
         address: address.toLowerCase(),
         blockNumber: { $gt: startingBlock },
+        processed: false,
       },
       {
         strict: false,
@@ -26,7 +27,9 @@ const EventSerializer = (address, startingBlock = 0) => {
       })
       .exec((err, tes) => {
         if (err) return reject(err);
-        return resolve(tes.map((te) => ({ ...te._doc, ...iface.parseLog(te) })));
+        return resolve(
+          tes.map((te) => ({ ...te._doc, ...iface.parseLog(te) }))
+        );
       });
   });
 };

@@ -20,6 +20,10 @@ var EventSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    processed: {
+      type: Boolean,
+      default: false,
+    },
   },
   { strict: false }
 );
