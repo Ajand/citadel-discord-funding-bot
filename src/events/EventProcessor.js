@@ -14,7 +14,7 @@ const EventProcessor = (variant, discordManager) => async (ev) => {
   };
 
   switch (ev.name) {
-    case "CitadelPriceBoundsSet":
+    case "CitadelPriceBoundsSet": {
       await PriceBound.methods.commands.create(variant, ev.happenedAt, {
         minPrice: ev.args.minPrice,
         maxPrice: ev.args.maxPrice,
@@ -27,7 +27,8 @@ const EventProcessor = (variant, discordManager) => async (ev) => {
         }`
       );
       return;
-    case "CitadelPriceInAssetUpdated":
+    }
+    case "CitadelPriceInAssetUpdated": {
       const { changeRate, duration } = await calculatePriceAndTimeDiff(variant)(
         ev.args.citadelPrice,
         ev.happenedAt
@@ -45,7 +46,18 @@ const EventProcessor = (variant, discordManager) => async (ev) => {
         } \n${changeRate}% change in ${duration}`
       );
       return;
-    case "CitadelPriceFlag":
+    }
+    case "CitadelPriceFlag": {
+      /// Price flag is also a CitadelPriceInAssetUpdated
+      const { changeRate, duration } = await calculatePriceAndTimeDiff(variant)(
+        ev.args.price,
+        ev.happenedAt
+      );
+      await Price.methods.commands.create(
+        variant,
+        ev.happenedAt,
+        ev.args.price
+      );
       await PriceFlag.methods.commands.create(variant, ev.happenedAt, {
         minPrice: ev.args.minPrice,
         maxPrice: ev.args.maxPrice,
@@ -56,9 +68,12 @@ const EventProcessor = (variant, discordManager) => async (ev) => {
           variant
         )} is flagged for being out of bounds! \nMin price: ${
           ev.args.minPrice
-        } \nMax price: ${ev.args.maxPrice} \nCurrent Price: ${ev.args.price}`
+        } \nMax price: ${ev.args.maxPrice} \nCurrent Price: ${
+          ev.args.price
+        } \n${changeRate}% change in ${duration}`
       );
       return;
+    }
   }
 };
 
