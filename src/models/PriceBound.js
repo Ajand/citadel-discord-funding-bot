@@ -31,7 +31,7 @@ const methods = {
   queries: {},
   commands: {
     create: (variant, happenedAt, { minPrice, maxPrice }) => {
-      const p = new PriceBound({ variant,happenedAt, minPrice, maxPrice });
+      const p = new PriceBound({ variant, happenedAt, minPrice, maxPrice });
       return p.save();
     },
   },

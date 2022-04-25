@@ -6,7 +6,7 @@ const calculatePriceAndTimeDiff = require("../lib/calculatePriceAndTimeDiff");
 const EventProcessor = (variant) => async (ev) => {
   switch (ev.name) {
     case "CitadelPriceBoundsSet":
-      await PriceBound.methods.commands.create(variant, ev.happendAt, {
+      await PriceBound.methods.commands.create(variant, ev.happenedAt, {
         minPrice: ev.args.minPrice,
         maxPrice: ev.args.maxPrice,
       });
@@ -15,18 +15,18 @@ const EventProcessor = (variant) => async (ev) => {
     case "CitadelPriceInAssetUpdated":
       const { changeRate, duration } = await calculatePriceAndTimeDiff(variant)(
         ev.args.citadelPrice,
-        ev.happendAt
+        ev.happenedAt
       );
-      console.log(ev.args);
+      console.log(changeRate, duration);
       await Price.methods.commands.create(
         variant,
-        ev.happendAt,
+        ev.happenedAt,
         ev.args.citadelPrice
       );
       // TODO must add discord functions
       return;
     case "CitadelPriceFlag":
-      await PriceFlag.methods.commands.create(variant, ev.happendAt, {
+      await PriceFlag.methods.commands.create(variant, ev.happenedAt, {
         minPrice: ev.args.minPrice,
         maxPrice: ev.args.maxPrice,
         price: ev.args.price,
