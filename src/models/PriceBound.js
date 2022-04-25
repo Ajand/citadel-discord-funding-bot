@@ -15,8 +15,12 @@ var PriceBoundSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    happenedAt: {
+      type: Date,
+      required: true,
+    },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 PriceBoundSchema.index({ createdAt: 1 });
@@ -26,8 +30,8 @@ var PriceBound = mongoose.model("priceBound", PriceBoundSchema);
 const methods = {
   queries: {},
   commands: {
-    create: (variant, { minPrice, maxPrice }) => {
-      const p = new PriceBound({ variant, minPrice, maxPrice });
+    create: (variant, happenedAt, { minPrice, maxPrice }) => {
+      const p = new PriceBound({ variant,happenedAt, minPrice, maxPrice });
       return p.save();
     },
   },

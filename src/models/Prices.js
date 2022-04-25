@@ -11,8 +11,12 @@ var PriceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    happenedAt: {
+      type: Date,
+      required: true,
+    },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 PriceSchema.index({ createdAt: 1 });
@@ -21,18 +25,23 @@ var Price = mongoose.model("prices", PriceSchema);
 
 const methods = {
   queries: {
-    getLast: () => {
+    getLast: (variant) => {
       return new Promise((resolve, reject) => {
-        Price.findOne({}, {}, { sort: { created_at: -1 } }, (err, price) => {
-          if (err) return reject(err);
-          return resolve(price);
-        });
+        Price.findOne(
+          { variant },
+          {},
+          { sort: { happenedAt: -1 } },
+          (err, price) => {
+            if (err) return reject(err);
+            return resolve(price);
+          }
+        );
       });
     },
   },
   commands: {
-    create: (variant, price) => {
-      const p = new Price({ variant, price });
+    create: (variant, happenedAt, price) => {
+      const p = new Price({ variant, happenedAt, price });
       return p.save();
     },
   },

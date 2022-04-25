@@ -19,8 +19,12 @@ const PriceFlagSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    happenedAt: {
+      type: Date,
+      required: true,
+    },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 PriceFlagSchema.index({ createdAt: 1 });
@@ -30,8 +34,8 @@ const PriceFlag = mongoose.model("priceFlag", PriceFlagSchema);
 const methods = {
   queries: {},
   commands: {
-    create: (variant, { minPrice, maxPrice, price }) => {
-      const p = new PriceBound({ variant, minPrice, maxPrice, price });
+    create: (variant,happenedAt, { minPrice, maxPrice, price }) => {
+      const p = new PriceBound({ variant, happenedAt, minPrice, maxPrice, price });
       return p.save();
     },
   },
