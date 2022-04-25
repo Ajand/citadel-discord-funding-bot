@@ -1,9 +1,9 @@
 const path = require("path");
 const LocalStorage = require("node-localstorage").LocalStorage;
 
-const EventMiner = require("../events/EventMiner");
-const SingleEventSaver = require("../events/SingleEventSaver");
-const GetBlockTimestamp = require("./GetBlockTimestamp");
+const EventMiner = require("./EventMiner");
+const SingleEventSaver = require("./SingleEventSaver");
+const GetBlockTimestamp = require("../lib/GetBlockTimestamp");
 const config = require("../config.json");
 
 const localStorage = new LocalStorage(
@@ -16,7 +16,7 @@ const fetchEvents = (provider) => async (storagePrefix, contractAddress) => {
   const startingBlock = localStorage.getItem(`${storagePrefix}LastFetched`)
     ? parseInt(localStorage.getItem(`${storagePrefix}LastFetched`))
     : config.STARTING_BLOCK;
-  EventMiner(provider)(
+  return EventMiner(provider)(
     contractAddress,
     startingBlock,
     lastBlock.number,
