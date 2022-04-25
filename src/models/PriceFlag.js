@@ -34,8 +34,14 @@ const PriceFlag = mongoose.model("priceFlag", PriceFlagSchema);
 const methods = {
   queries: {},
   commands: {
-    create: (variant,happenedAt, { minPrice, maxPrice, price }) => {
-      const p = new PriceBound({ variant, happenedAt, minPrice, maxPrice, price });
+    create: (variant, happenedAt, { minPrice, maxPrice, price }) => {
+      const p = new PriceFlag({
+        variant,
+        happenedAt,
+        minPrice,
+        maxPrice,
+        price,
+      });
       return p.save();
     },
   },
