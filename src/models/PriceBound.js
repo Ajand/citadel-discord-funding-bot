@@ -25,7 +25,12 @@ var PriceBound = mongoose.model("priceBound", PriceBoundSchema);
 
 const methods = {
   queries: {},
-  commands: {},
+  commands: {
+    create: (variant, { minPrice, maxPrice }) => {
+      const p = new PriceBound({ variant, minPrice, maxPrice });
+      return p.save();
+    },
+  },
 };
 
 module.exports = {
