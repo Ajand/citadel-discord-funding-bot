@@ -1,21 +1,24 @@
 const mongoose = require("mongoose");
 
-var PriceSchema = new mongoose.Schema(
+var PriceBoundSchema = new mongoose.Schema(
   {
     variant: {
       type: String,
       enum: ["wbtc", "cvx"],
     },
-    price: {
+    minPrice: {
+      type: String,
+    },
+    maxPrice: {
       type: String,
     },
   },
   { timestamp: true }
 );
 
-PriceSchema.index({ createdAt: 1 });
+PriceBoundSchema.index({ createdAt: 1 });
 
-var Price = mongoose.model("prices", PriceSchema);
+var PriceBound = mongoose.model("events", PriceBoundSchema);
 
 const methods = {
   queries: {},
@@ -23,6 +26,6 @@ const methods = {
 };
 
 module.exports = {
-  collection: Price,
+  collection: PriceBound,
   methods,
 };
