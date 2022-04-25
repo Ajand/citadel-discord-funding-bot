@@ -2,51 +2,65 @@ require("./mongooseConnector");
 const { ethers } = require("ethers");
 const config = require("./config.json");
 
-const Funding = require("./contracts/Funding.json");
+const Events = require("./models/Events");
 
-const FundingFilterCreator = require("./events/FundingFilterCreator");
+const EventSerializer = require("./events/EventSerializer");
+
+const EventProcessor = require("./events/EventProcessor");
+
+const DiscordManager = require("./lib/DiscordManager");
+const JobQueue = require("./lib/JobQueue");
+
+const handleFundingEventStream = require("./lib/handleFundingEventStream");
 
 const main = async () => {
+  const discordManager = await DiscordManager();
+
   const provider = new ethers.providers.JsonRpcProvider(config.RPC_URL);
 
-  const cvxFunding = new ethers.Contract(
-    config.FUNDING_CVX_ADDRESS,
-    Funding.abi,
-    provider
-  );
-  const wbtcFunding = new ethers.Contract(
-    config.FUNDING_WBTC_ADDRESS,
-    Funding.abi,
-    provider
-  );
+  handleFundingEventStream(provider)("wbtc", config.FUNDING_WBTC_ADDRESS);
+  handleFundingEventStream(provider)("cvx", config.FUNDING_CVX_ADDRESS);
 
-  console.log(wbtcFunding.address, cvxFunding.address);
+  const wbtcJobQueue = JobQueue();
+  const cvxJobQueue = JobQueue();
 
-  const lastBlock = await provider.getBlock();
+  setInterval(async () => {
+    const wbtcNotProcessedEvents = await EventSerializer(
+      config.FUNDING_WBTC_ADDRESS,
+      0
+    );
+    wbtcNotProcessedEvents.forEach((ev) => {
+      wbtcJobQueue.addJob(ev);
+    });
+    const cvxNotProcessedEvents = await EventSerializer(
+      config.FUNDING_CVX_ADDRESS,
+      0
+    );
+    cvxNotProcessedEvents.forEach((ev) => {
+      cvxJobQueue.addJob(ev);
+    });
+  }, 1000);
 
-  // const cvxFileteredEvents = await cvxFunding.queryFilter(
-  //   FundingFilterCreator(provider)(cvxFunding.address),
-  //   config.STARTING_BLOCK,
-  //   lastBlock.number
-  // );
-  //
-  // console.log(cvxFileteredEvents);
+  const setEventProcessed = (_id) => {
+    return new Promise((resolve, reject) => {
+      Events.updateOne({ _id }, { $set: { processed: true } }, (err, done) => {
+        if (err) return reject(err);
+        return resolve(done);
+      });
+    });
+  };
 
-  console.log(FundingFilterCreator(provider)(wbtcFunding.address));
-  const btcFileteredEvents = await wbtcFunding.queryFilter(
-    FundingFilterCreator(provider)(wbtcFunding.address),
-    config.STARTING_BLOCK,
-    lastBlock.number
-  );
+  setInterval(() => {
+    wbtcJobQueue.execute(async (currentJob) => {
+      await EventProcessor("wbtc", discordManager)(currentJob);
+      await setEventProcessed(currentJob._id);
+    });
 
-  console.log(btcFileteredEvents);
-
-  // wbtcFunding.on(FundingFilterCreator(provider)(wbtcFunding), (a, b) => {
-  //   console.log(a, b);
-  // });
-
-  // console.log(cvxFileteredEvents);
-  // console.log(btcFileteredEvents);
+    cvxJobQueue.execute(async (currentJob) => {
+      await EventProcessor("cvx", discordManager)(currentJob);
+      await setEventProcessed(currentJob._id);
+    });
+  }, 1000);
 };
 
 main();
