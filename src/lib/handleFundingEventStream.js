@@ -19,6 +19,8 @@ const handleFundingEventStream =
       provider
     );
 
+    await FetchEvents(provider)(storagePrefix, targetContract.address);
+
     setInterval(async () => {
       await FetchEvents(provider)(storagePrefix, targetContract.address);
     }, 60 * 2 * 1000);
