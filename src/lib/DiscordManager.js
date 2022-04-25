@@ -15,7 +15,6 @@ const targetChannels = new Map(
     : null
 );
 const removeFirstWord = (str) => {
-  console.log(str);
   const indexOfSpace = str.indexOf(" ");
 
   if (indexOfSpace === -1) {
@@ -93,8 +92,6 @@ const DiscordManager = async () => {
     const channels = [...targetChannels.keys()];
 
     channels.forEach((channel) => {
-      console.log(client.channels.cache.get(channel));
-
       if (client.channels.cache.get(channel)) {
         client.channels.cache.get(channel)?.send(message);
       }
