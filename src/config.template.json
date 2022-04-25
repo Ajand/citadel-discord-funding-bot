@@ -1,0 +1,8 @@
+{
+  "BOT_TOKEN": "",
+  "RPC_URL": "",
+  "FUNDING_WBTC_ADDRESS": "",
+  "FUNDING_CVX_ADDRESS": "",
+  "STARTING_BLOCK": 0,
+  "MONGOOSE_CONNECTION_URL": ""
+}
