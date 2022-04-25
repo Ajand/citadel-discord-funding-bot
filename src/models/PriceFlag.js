@@ -23,7 +23,7 @@ const PriceFlagSchema = new mongoose.Schema(
   { timestamp: true }
 );
 
-PriceBoundSchema.index({ createdAt: 1 });
+PriceFlagSchema.index({ createdAt: 1 });
 
 const PriceFlag = mongoose.model("priceFlag", PriceFlagSchema);
 
