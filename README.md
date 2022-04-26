@@ -8,7 +8,7 @@ A discord bot that tracks Funding contracts in order to notify the team / commun
 ### Setup
 
 ```console
-mv config.template.json config.json
+mv src/config.template.json src/config.json
 yarn
 ```
 
